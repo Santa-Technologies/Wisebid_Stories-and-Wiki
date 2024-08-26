@@ -158,7 +158,7 @@ export default FormNameComponent;
 ```
 
 ### FormProvider Usage
-If in the event of the `useForm` instance being needed to be placed in the parent component, we have two options:
+If the useForm instance needs to be placed in the parent component, we have two options:
 
 #### 1. Pass down as props
 
