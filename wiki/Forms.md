@@ -177,34 +177,10 @@ const FormNameComponent: React.FC = () => {
     resolver: zodResolver(Schema),
   });
 
-  // Queries
-  
-  // Mutations
-
-  // Other necessary logichttps://github.com/Santa-Technologies/Stories-and-Wiki/blob/main/wiki/Forms.md
-
-  /**
-   * OnClick handler for the Back button
-  */
-  const handleBackClick = () => navigate(-1);
-
-  const onSubmitt: SubmitHandler<TSchema> = (data: Schema): void => {
-    // Handle form submission logic here
-    console.log('Form Data:', data);
-  };
 
   // Action buttons for FormGroupHeader
   const actionButtons: ActionButtonConfig[] = [
-    {
-      text: "Back",
-      actionFn: handleBackClick,
-      variant: "outline",
-    },
-    {
-      text: "Submit",
-      type: "submit",
-      form: "schema-form-id", // Set id of form inside of ./Form.tsx
-    }
+    //
   ];
 
   return (
@@ -240,34 +216,9 @@ const FormNameComponent: React.FC = () => {
     resolver: zodResolver(Schema),
   });
 
-  // Queries
-  
-  // Mutations
-
-  // Other necessary logichttps://github.com/Santa-Technologies/Stories-and-Wiki/blob/main/wiki/Forms.md
-
-  /**
-   * OnClick handler for the Back button
-  */
-  const handleBackClick = () => navigate(-1);
-
-  const onSubmitt: SubmitHandler<TSchema> = (data: Schema): void => {
-    // Handle form submission logic here
-    console.log('Form Data:', data);
-  };
-
   // Action buttons for FormGroupHeader
   const actionButtons: ActionButtonConfig[] = [
-    {
-      text: "Back",
-      actionFn: handleBackClick,
-      variant: "outline",
-    },
-    {
-      text: "Submit",
-      type: "submit",
-      form: "schema-form-id", // Set id of form inside of ./Form.tsx
-    }
+    //
   ];
 
   return (
