@@ -31,35 +31,29 @@ import { Schema2 } from "./Schema2";
 import { Schema3 } from "./Schema3";
 import { positiveNumber, nonEmptyString, positiveInteger } from "@/utils/form";
 
-export const ServiceSchema = z.object({
-  name: nonEmptyString("Name"),
-  hourlyWage: positiveNumber("Wage"),
-  hoursBriefingPerEmployee: positiveInteger("Hours Briefing per Employee"),
-  siteId: z.number().optional(),
-  payGroup: z.enum(["Group 1", "Group 2", "Group 3"], {
-    message: "Please select a pay group.",
+export const Schema = z.object({
+  textField: nonEmptyString("Text Field"),
+  numberField: positiveNumber("NumberField"),
+  intField: positiveInteger("Int Field"),
+  enumField: z.enum(["Value 1", "Value 2", "Value 3"], {
+    message: "Please select a value.",
   }),
-  nonTariffAllowance: positiveNumber("Non-Tariff Allowance"),
-  shifts: z.array(Schema2).min(1, { message: "At least one shift must be added" }),
-  margin: positiveNumber("Margin"),
-  pauseIncluded: z.boolean().default(true),
-  siteInput: Schema3.optional(),
+  schema2: z.array(Schema2).min(1, { message: "At least one must be added" }),
+  booleanField: z.boolean().default(true),
+  schema3: Schema3.optional(),
 });
 
-export const ServiceDefaultValues = {
-  name: "",
-  siteId: undefined,
-  hourlyWage: undefined,
-  // type: ServiceTypeEnum.Permanent,
-  nonTariffAllowance: undefined,
-  shifts: [],
-  margin: 0,
-  pauseIncluded: true,
-  siteInput: undefined,
-  payGroup: undefined,
+export const SchemaDefaultValues = {
+  textField: "",
+  numberField: undefined, // set undefined as default values for numbers
+  intField: undefined,
+  enumField: "" as EnumType,
+  schema2: undefined,
+  boolean: true,
+  schema3: undefined
 };
 
-export type TServiceSchema = z.infer<typeof ServiceSchema>;
+export type TSchema = z.infer<typeof Schema>;
 ```
 2.Build the Form Component
 
@@ -74,13 +68,16 @@ export type TServiceSchema = z.infer<typeof ServiceSchema>;
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ServiceSchema } from '../Models';
-import { Service } from '../Models';
+import { Schema, TSchema } from '../Models';
 
 const Form: React.FC<FormProps> = () => {
   const { register, handleSubmit, formState: { errors } } = useForm<TSchema>({
     resolver: zodResolver(Schema),
   });
+
+  // Very simple but important helper function
+  // Helps with debugging form errors
+  const onInvalid = (errors: unknown) => console.error(errors);
 
   /**
    * OnSubmit handler
@@ -93,7 +90,7 @@ const Form: React.FC<FormProps> = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit, onInvalid)}> // Make sure to add `onInvalid`
       <div>
         <label>Name:</label>
         <input {...register('name')} />
@@ -144,7 +141,7 @@ const FormNameComponent: React.FC = () => {
     {
       text: "Submit",
       type: "submit",
-      form: "add-service-form", // Set id of form inside of ./Form.tsx
+      form: "schema-form-id", // Set id of form inside of ./Form.tsx
     }
   ];
 
