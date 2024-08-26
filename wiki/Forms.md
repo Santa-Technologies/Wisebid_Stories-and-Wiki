@@ -1,4 +1,4 @@
-Adding a New Form
+## Adding a New Form
 
 This guide outlines the process for adding a new form to our app, along with best practices, folder structure, and important notes. Our forms are built using React, react-hook-form, Zod for validation, and Shadcn components for UI elements.
 
