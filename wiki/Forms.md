@@ -18,7 +18,7 @@ src/
 ```
 
 Steps to Add a New Form
-1.Create the Zod Schema
+### 1.Create the Zod Schema
 
 - Define the validation schema for the form using Zod.
 - Create a new file `[FormName].ts` inside of `./Models`.
@@ -55,7 +55,7 @@ export const SchemaDefaultValues = {
 
 export type TSchema = z.infer<typeof Schema>;
 ```
-2.Build the Form Component
+### 2.Build the Form Component
 
 - Create the main form component in Form.tsx.
 - Use react-hook-form to manage form state.
@@ -79,18 +79,13 @@ const Form: React.FC<FormProps> = () => {
   // Helps with debugging form errors
   const onInvalid = (errors: unknown) => console.error(errors);
 
-  /**
-   * OnSubmit handler
-   * @param {TSchema} data
-   * @returns
-   */
-  const handleFormSubmitt: SubmitHandler<TSchema> = (data: Schema): void => {
+  const onSubmitt: SubmitHandler<TSchema> = (data: Schema): void => {
     // Handle form submission logic here
     console.log('Form Data:', data);
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit, onInvalid)}> // Make sure to add `onInvalid`
+    <form id="schema-form-id" onSubmit={handleSubmit(onSubmit, onInvalid)}> // Make sure to add `onInvalid`
       <div>
         <label>Name:</label>
         <input {...register('name')} />
@@ -109,7 +104,7 @@ const Form: React.FC<FormProps> = () => {
 
 export default Form;
 ```
-3.Build the Form Wrapper Component
+#### 3.Build the Form Wrapper Component
 
 ```
 // src/pages/[PageName]/[FormName]/[FormName]Component.tsx
@@ -124,7 +119,7 @@ const FormNameComponent: React.FC = () => {
   
   // Mutations
 
-  // Other necessary logic
+  // Other necessary logichttps://github.com/Santa-Technologies/Stories-and-Wiki/blob/main/wiki/Forms.md
 
   /**
    * OnClick handler for the Back button
@@ -160,6 +155,147 @@ const FormNameComponent: React.FC = () => {
 };
 
 export default FormNameComponent;
+```
+
+### FormProvider Usage
+If in the event of the `useForm` instance being needed to be placed in the parent component, we have two options:
+
+#### 1. Pass down as props
+
+```
+// src/pages/[PageName]/[FormName]/[FormName]Component.tsx
+
+import React from 'react';
+import Form from './Form';
+import { Schema, TSchema } from '../Models';
+import { ActionButtonConfig } from "@/components/shared/FormGroupHeader";
+
+const FormNameComponent: React.FC = () => {
+
+  // Init form instance
+  const form = useForm<TSchema>({
+    resolver: zodResolver(Schema),
+  });
+
+  // Queries
+  
+  // Mutations
+
+  // Other necessary logichttps://github.com/Santa-Technologies/Stories-and-Wiki/blob/main/wiki/Forms.md
+
+  /**
+   * OnClick handler for the Back button
+  */
+  const handleBackClick = () => navigate(-1);
+
+  const onSubmitt: SubmitHandler<TSchema> = (data: Schema): void => {
+    // Handle form submission logic here
+    console.log('Form Data:', data);
+  };
+
+  // Action buttons for FormGroupHeader
+  const actionButtons: ActionButtonConfig[] = [
+    {
+      text: "Back",
+      actionFn: handleBackClick,
+      variant: "outline",
+    },
+    {
+      text: "Submit",
+      type: "submit",
+      form: "schema-form-id", // Set id of form inside of ./Form.tsx
+    }
+  ];
+
+  return (
+    <>
+      FormGroupHeader
+        breadcrumbs={<Breadcrumbs />} // If needed
+        actionButtons={actionButtons} // If needed
+        title={"Form Title"}
+        description={"Some descriptive text"}
+      />
+
+      <Form form={form} onSubmit={onSubmit} />
+    </>
+  );
+};
+
+export default FormNameComponent;
+```
+#### 2. FormProvider
+
+```
+// src/pages/[PageName]/[FormName]/[FormName]Component.tsx
+
+import React from 'react';
+import Form from './Form';
+import { Schema, TSchema } from '../Models';
+import { ActionButtonConfig } from "@/components/shared/FormGroupHeader";
+
+const FormNameComponent: React.FC = () => {
+
+  // Init form instance
+  const form = useForm<TSchema>({
+    resolver: zodResolver(Schema),
+  });
+
+  // Queries
+  
+  // Mutations
+
+  // Other necessary logichttps://github.com/Santa-Technologies/Stories-and-Wiki/blob/main/wiki/Forms.md
+
+  /**
+   * OnClick handler for the Back button
+  */
+  const handleBackClick = () => navigate(-1);
+
+  const onSubmitt: SubmitHandler<TSchema> = (data: Schema): void => {
+    // Handle form submission logic here
+    console.log('Form Data:', data);
+  };
+
+  // Action buttons for FormGroupHeader
+  const actionButtons: ActionButtonConfig[] = [
+    {
+      text: "Back",
+      actionFn: handleBackClick,
+      variant: "outline",
+    },
+    {
+      text: "Submit",
+      type: "submit",
+      form: "schema-form-id", // Set id of form inside of ./Form.tsx
+    }
+  ];
+
+  return (
+    <>
+      FormGroupHeader
+        breadcrumbs={<Breadcrumbs />} // If needed
+        actionButtons={actionButtons} // If needed
+        title={"Form Title"}
+        description={"Some descriptive text"}
+      />
+      <FormProvider {...form}> 
+        <Form onSubmit={onSubmit} />
+      </FormProvider>
+    </>
+  );
+};
+
+export default FormNameComponent;
+```
+#### FormContext
+Inside the child component, we do the following:
+```
+import { useFormContext } from "react-hook-form";
+
+const form = useFormContext();
+
+// Example
+const currentValues = form.getValues();
 ```
 
 ### Best Practices
